@@ -1,0 +1,14 @@
+- Sử dụng API từ trang web https://reqres.in/ để tạo website
+- Sử dụng Reactjs để tạo một màn hình website cơ bản bao gồm các chức năng:
+	+ Đăng nhập
+	+ Thêm User
+	+ Sửa User
+	+ Xóa User
+	+ Hiển thị tất cả các User
+	+ Tìm kiếm User theo email
+	+ Sắp xếp theo First name
+	+ Import User từ file .csv
+	+ Export User ra file .csv
+- Tự do điều chỉnh html, css, để có một website nhẹ nhàng, khoa học và đẹp
+- Commit và push source code lên github public
+- Triển khai website public
