@@ -109,9 +109,42 @@ const TableUsers = (props) => {
 		setListUsers(newListUsers);
 	}, [sortBy]);
 
+	const handelSearch = (e) => {
+		let term = e.target.value;
+		term = term.trim();
+
+		if (term) {
+			console.log(term);
+			const newListUsers = [...listUsers].filter((user) =>
+				user.email.includes(term)
+			);
+
+			setListUsers(newListUsers);
+		} else {
+			getUsers(1);
+		}
+	};
+
 	return (
 		<>
 			<div>
+				<div className='input-group flex-nowrap mb-2 w-25'>
+					<span
+						className='input-group-text'
+						id='addon-wrapping'
+					>
+						@
+					</span>
+					<input
+						type='text'
+						className='form-control'
+						placeholder='Search user by email...'
+						aria-label='search'
+						aria-describedby='addon-wrapping'
+						onChange={(e) => handelSearch(e)}
+					/>
+				</div>
+
 				<Table
 					striped
 					bordered
