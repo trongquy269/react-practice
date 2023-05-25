@@ -1,26 +1,23 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Modal, Form, ToastContainer, Toast } from 'react-bootstrap';
-import { postCreateUser } from '../services/UserService';
-import { UserContext } from '../App';
+import { putUpdateUser } from '../services/UserService';
 
-const ModalAddNew = (props) => {
+const ModalEditUser = (props) => {
+	const { show, onHide, dataUserEdit } = props;
 	const [name, setName] = useState('');
 	const [job, setJob] = useState('');
 	const [isShowToast, setIsShowToast] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
-	const { setUser } = useContext(UserContext);
 
-	const handleSaveUser = async () => {
-		const res = await postCreateUser(name, job);
-
-		if (res && res.id) {
+	const handleEditUser = async () => {
+		const res = await putUpdateUser(dataUserEdit.id, name, job);
+		if (res && res.updatedAt) {
 			// Success
-			setUser({ id: res.id, first_name: res.name });
 			setIsSuccess(true);
 			setIsShowToast(true);
 			props.onHide();
-			setName('');
-			setJob('');
+			dataUserEdit['new_name'] = name;
+			dataUserEdit['new_job'] = job;
 		} else {
 			// error
 			setIsSuccess(false);
@@ -32,14 +29,15 @@ const ModalAddNew = (props) => {
 	return (
 		<>
 			<Modal
-				{...props}
+				show={show}
 				size='lg'
 				aria-labelledby='contained-modal-title-vcenter'
 				centered
+				onHide={onHide}
 			>
 				<Modal.Header closeButton>
 					<Modal.Title id='contained-modal-title-vcenter'>
-						ADD NEW USER
+						EDIT A USER
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
@@ -48,10 +46,11 @@ const ModalAddNew = (props) => {
 							className='mb-3'
 							controlId='formBasicEmail'
 						>
-							<Form.Label>Name</Form.Label>
+							<Form.Label>Replace first name</Form.Label>
 							<Form.Control
 								type='text'
-								placeholder='Enter name'
+								placeholder='Enter new first name'
+								defaultValue={dataUserEdit.first_name}
 								onInput={(e) => setName(e.target.value)}
 							/>
 						</Form.Group>
@@ -60,10 +59,11 @@ const ModalAddNew = (props) => {
 							className='mb-3'
 							controlId='formBasicPassword'
 						>
-							<Form.Label>Job</Form.Label>
+							<Form.Label>Replace job</Form.Label>
 							<Form.Control
 								type='text'
-								placeholder='Enter job'
+								placeholder='Enter new job'
+								defaultValue={dataUserEdit.job || ''}
 								onInput={(e) => setJob(e.target.value)}
 							/>
 						</Form.Group>
@@ -72,13 +72,13 @@ const ModalAddNew = (props) => {
 				<Modal.Footer>
 					<Button
 						variant='primary'
-						onClick={() => handleSaveUser()}
+						onClick={() => handleEditUser()}
 					>
-						Save
+						Confirm
 					</Button>
 					<Button
 						variant='secondary'
-						onClick={props.onHide}
+						onClick={onHide}
 					>
 						Close
 					</Button>
@@ -97,7 +97,7 @@ const ModalAddNew = (props) => {
 					onClose={() => setIsShowToast(false)}
 				>
 					<Toast.Header closeButton={true}>
-						<strong className='me-auto'>ADD NEW USER</strong>
+						<strong className='me-auto'>EDIT A USER</strong>
 						<small className='text-muted'>just now</small>
 					</Toast.Header>
 					<Toast.Body>{isSuccess ? 'Success' : 'Error'}</Toast.Body>
@@ -107,4 +107,4 @@ const ModalAddNew = (props) => {
 	);
 };
 
-export default ModalAddNew;
+export default ModalEditUser;

@@ -3,11 +3,14 @@ import Table from 'react-bootstrap/Table';
 import { fetchAllUser } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
 import { UserContext } from '../App';
+import ModalEditUser from './ModalEditUser';
 
 const TableUsers = (props) => {
 	const [listUsers, setListUsers] = useState([]);
 	const [totalUsers, setTotalUsers] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
+	const [isShowModalEditUser, setIsShowModalEditUser] = useState(false);
+	const [dataUserEdit, setDataUserEdit] = useState({});
 
 	const { user } = useContext(UserContext);
 
@@ -36,56 +39,99 @@ const TableUsers = (props) => {
 		getUsers(+event.selected + 1);
 	};
 
-	return (
-		<div>
-			<Table
-				striped
-				bordered
-				hover
-			>
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>First Name</th>
-						<th>Last Name</th>
-						<th>Email</th>
-					</tr>
-				</thead>
-				<tbody>
-					{listUsers &&
-						listUsers.length > 0 &&
-						listUsers.map((user, index) => (
-							<tr key={`users-${index}`}>
-								<td>{user.id}</td>
-								<td>{user.first_name}</td>
-								<td>{user.last_name}</td>
-								<td>{user.email}</td>
-							</tr>
-						))}
-				</tbody>
-			</Table>
+	const onEditUser = (user) => {
+		setDataUserEdit(user);
+		setIsShowModalEditUser(true);
+	};
 
-			<ReactPaginate
-				nextLabel='next >'
-				onPageChange={handlePageClick}
-				pageRangeDisplayed={3}
-				marginPagesDisplayed={2}
-				pageCount={totalPages}
-				previousLabel='< previous'
-				pageClassName='page-item'
-				pageLinkClassName='page-link'
-				previousClassName='page-item'
-				previousLinkClassName='page-link'
-				nextClassName='page-item'
-				nextLinkClassName='page-link'
-				breakLabel='...'
-				breakClassName='page-item'
-				breakLinkClassName='page-link'
-				containerClassName='pagination'
-				activeClassName='active'
-				renderOnZeroPageCount={null}
+	// Handle change user first name
+	useEffect(() => {
+		if (dataUserEdit && dataUserEdit.new_name) {
+			const newListUsers = listUsers.map((user) => {
+				if (user.id === dataUserEdit.id) {
+					return {
+						...user,
+						first_name: dataUserEdit.new_name,
+						job: dataUserEdit.new_job,
+					};
+				} else {
+					return user;
+				}
+			});
+			setListUsers(newListUsers);
+		}
+	}, [dataUserEdit.new_name]);
+
+	return (
+		<>
+			<div>
+				<Table
+					striped
+					bordered
+					hover
+				>
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Email</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{listUsers &&
+							listUsers.length > 0 &&
+							listUsers.map((user, index) => (
+								<tr key={`users-${index}`}>
+									<td>{user.id}</td>
+									<td>{user.first_name}</td>
+									<td>{user.last_name}</td>
+									<td>{user.email}</td>
+									<td className='d-flex'>
+										<button
+											className='btn btn-warning w-50 me-1'
+											onClick={() => onEditUser(user)}
+										>
+											Edit
+										</button>
+										<button className='btn btn-danger w-50 ms-1'>
+											Delete
+										</button>
+									</td>
+								</tr>
+							))}
+					</tbody>
+				</Table>
+
+				<ReactPaginate
+					nextLabel='next >'
+					onPageChange={handlePageClick}
+					pageRangeDisplayed={3}
+					marginPagesDisplayed={2}
+					pageCount={totalPages}
+					previousLabel='< previous'
+					pageClassName='page-item'
+					pageLinkClassName='page-link'
+					previousClassName='page-item'
+					previousLinkClassName='page-link'
+					nextClassName='page-item'
+					nextLinkClassName='page-link'
+					breakLabel='...'
+					breakClassName='page-item'
+					breakLinkClassName='page-link'
+					containerClassName='pagination'
+					activeClassName='active'
+					renderOnZeroPageCount={null}
+				/>
+			</div>
+
+			<ModalEditUser
+				show={isShowModalEditUser}
+				onHide={() => setIsShowModalEditUser(false)}
+				dataUserEdit={dataUserEdit}
 			/>
-		</div>
+		</>
 	);
 };
 
