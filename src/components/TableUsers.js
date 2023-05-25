@@ -15,6 +15,7 @@ const TableUsers = (props) => {
 		useState(false);
 	const [dataUserEdit, setDataUserEdit] = useState({});
 	const [dataUserDelete, setDataUserDelete] = useState({});
+	const [sortBy, setSortBy] = useState({ field: 'id', order: 'asc' });
 
 	const { user } = useContext(UserContext);
 
@@ -83,6 +84,31 @@ const TableUsers = (props) => {
 		}
 	}, [dataUserDelete.isDeleted]);
 
+	// Handle sort
+	useEffect(() => {
+		const newListUsers = [...listUsers];
+
+		if (sortBy.field === 'id') {
+			if (sortBy.order === 'asc') {
+				newListUsers.sort((a, b) => a[sortBy.field] - b[sortBy.field]);
+			} else if (sortBy.order === 'desc') {
+				newListUsers.sort((a, b) => b[sortBy.field] - a[sortBy.field]);
+			}
+		} else if (sortBy.field === 'first_name') {
+			if (sortBy.order === 'asc') {
+				newListUsers.sort((a, b) => {
+					return a[sortBy.field] > b[sortBy.field] ? 1 : -1;
+				});
+			} else if (sortBy.order === 'desc') {
+				newListUsers.sort((a, b) => {
+					return a[sortBy.field] < b[sortBy.field] ? 1 : -1;
+				});
+			}
+		}
+
+		setListUsers(newListUsers);
+	}, [sortBy]);
+
 	return (
 		<>
 			<div>
@@ -93,8 +119,60 @@ const TableUsers = (props) => {
 				>
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>First Name</th>
+							<th>
+								<div className='d-flex align-items-center justify-content-between'>
+									<span>ID</span>
+									<span>
+										<i
+											className='fa-solid fa-arrow-down-long ps-1 pe-1'
+											style={{ cursor: 'pointer' }}
+											onClick={() =>
+												setSortBy({
+													field: 'id',
+													order: 'desc',
+												})
+											}
+										></i>
+										<i
+											className='fa-solid fa-arrow-up-long ps-1 pe-1'
+											style={{ cursor: 'pointer' }}
+											onClick={() =>
+												setSortBy({
+													field: 'id',
+													order: 'asc',
+												})
+											}
+										></i>
+									</span>
+								</div>
+							</th>
+							<th>
+								<div className='d-flex align-items-center justify-content-between'>
+									<span>First Name</span>
+									<span>
+										<i
+											className='fa-solid fa-arrow-down-long ps-1 pe-1'
+											style={{ cursor: 'pointer' }}
+											onClick={() =>
+												setSortBy({
+													field: 'first_name',
+													order: 'desc',
+												})
+											}
+										></i>
+										<i
+											className='fa-solid fa-arrow-up-long ps-1 pe-1'
+											style={{ cursor: 'pointer' }}
+											onClick={() =>
+												setSortBy({
+													field: 'first_name',
+													order: 'asc',
+												})
+											}
+										></i>
+									</span>
+								</div>
+							</th>
 							<th>Last Name</th>
 							<th>Email</th>
 							<th>Actions</th>
