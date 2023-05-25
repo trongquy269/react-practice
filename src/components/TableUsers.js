@@ -1,17 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Table from 'react-bootstrap/Table';
 import { fetchAllUser } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
+import { UserContext } from '../App';
 
 const TableUsers = (props) => {
 	const [listUsers, setListUsers] = useState([]);
 	const [totalUsers, setTotalUsers] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
 
+	const { user } = useContext(UserContext);
+
 	useEffect(() => {
 		// Call api
 		getUsers(1);
 	}, []);
+
+	useEffect(() => {
+		if (user && user.id) {
+			setListUsers((prev) => [...prev, user]);
+		}
+	}, [user]);
 
 	const getUsers = async (page) => {
 		const res = await fetchAllUser(page);
