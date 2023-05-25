@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button, Modal, Form, ToastContainer, Toast } from 'react-bootstrap';
 import { putUpdateUser } from '../services/UserService';
 
@@ -34,6 +34,8 @@ const ModalEditUser = (props) => {
 				aria-labelledby='contained-modal-title-vcenter'
 				centered
 				onHide={onHide}
+				backdrop='static'
+				keyboard={false}
 			>
 				<Modal.Header closeButton>
 					<Modal.Title id='contained-modal-title-vcenter'>

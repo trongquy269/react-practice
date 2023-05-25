@@ -4,13 +4,17 @@ import { fetchAllUser } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
 import { UserContext } from '../App';
 import ModalEditUser from './ModalEditUser';
+import ModalConfirm from './ModalConfirm';
 
 const TableUsers = (props) => {
 	const [listUsers, setListUsers] = useState([]);
 	const [totalUsers, setTotalUsers] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
 	const [isShowModalEditUser, setIsShowModalEditUser] = useState(false);
+	const [isShowModalConfirmDelete, setIsShowModalConfirmDelete] =
+		useState(false);
 	const [dataUserEdit, setDataUserEdit] = useState({});
+	const [dataUserDelete, setDataUserDelete] = useState({});
 
 	const { user } = useContext(UserContext);
 
@@ -62,6 +66,23 @@ const TableUsers = (props) => {
 		}
 	}, [dataUserEdit.new_name]);
 
+	const handleDeleteUser = (user) => {
+		setIsShowModalConfirmDelete(true);
+		setDataUserDelete(user);
+	};
+
+	// Handle delete user
+	useEffect(() => {
+		if (dataUserDelete && dataUserDelete.isDeleted) {
+			const newListUsers = listUsers.filter((user) => {
+				if (user.id !== dataUserDelete.id) {
+					return user;
+				}
+			});
+			setListUsers(newListUsers);
+		}
+	}, [dataUserDelete.isDeleted]);
+
 	return (
 		<>
 			<div>
@@ -95,7 +116,12 @@ const TableUsers = (props) => {
 										>
 											Edit
 										</button>
-										<button className='btn btn-danger w-50 ms-1'>
+										<button
+											className='btn btn-danger w-50 ms-1'
+											onClick={() =>
+												handleDeleteUser(user)
+											}
+										>
 											Delete
 										</button>
 									</td>
@@ -130,6 +156,12 @@ const TableUsers = (props) => {
 				show={isShowModalEditUser}
 				onHide={() => setIsShowModalEditUser(false)}
 				dataUserEdit={dataUserEdit}
+			/>
+
+			<ModalConfirm
+				show={isShowModalConfirmDelete}
+				onHide={() => setIsShowModalConfirmDelete(false)}
+				dataUserDelete={dataUserDelete}
 			/>
 		</>
 	);
