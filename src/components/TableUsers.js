@@ -1,7 +1,11 @@
 import { useEffect, useState, useContext } from 'react';
 import Table from 'react-bootstrap/Table';
-import { fetchAllUser } from '../services/UserService';
 import ReactPaginate from 'react-paginate';
+import { CSVLink } from 'react-csv';
+import Papa from 'papaparse';
+import { ToastContainer, Toast } from 'react-bootstrap';
+
+import { fetchAllUser } from '../services/UserService';
 import { UserContext } from '../App';
 import ModalEditUser from './ModalEditUser';
 import ModalConfirm from './ModalConfirm';
@@ -16,6 +20,8 @@ const TableUsers = (props) => {
 	const [dataUserEdit, setDataUserEdit] = useState({});
 	const [dataUserDelete, setDataUserDelete] = useState({});
 	const [sortBy, setSortBy] = useState({ field: 'id', order: 'asc' });
+	const [dataExport, setDataExport] = useState([]);
+	const [isShowToast, setIsShowToast] = useState(false);
 
 	const { user } = useContext(UserContext);
 
@@ -125,24 +131,107 @@ const TableUsers = (props) => {
 		}
 	};
 
+	const getUsersExport = (event, done) => {
+		const result = [];
+		if (listUsers && listUsers.length > 0) {
+			result.push(['ID', 'First Name', 'Last Name', 'Email']);
+			listUsers.forEach((user) => {
+				result.push([
+					user.id,
+					user.first_name,
+					user.last_name,
+					user.email,
+				]);
+			});
+			setDataExport(result);
+			done();
+		}
+	};
+
+	const handelImportCSV = (e) => {
+		const file = e.target.files[0];
+
+		if (file && file.size) {
+			if (file.type !== 'text/csv') {
+				setIsShowToast(true);
+				return;
+			}
+
+			// Parse local CSV file
+			Papa.parse(file, {
+				// header: true,
+				complete: function (results) {
+					const rawCSV = results.data;
+
+					if (rawCSV && rawCSV.length > 0) {
+						if (rawCSV[0] && rawCSV[0].length === 3) {
+							const result = [];
+							rawCSV.forEach((item, index) => {
+								if (index > 0 && item.length === 3) {
+									const obj = {};
+									obj.first_name = item[0];
+									obj.last_name = item[1];
+									obj.email = item[2];
+									result.push(obj);
+								}
+							});
+							setListUsers(result);
+						} else {
+							alert('Wrong format header CSV file');
+						}
+					} else {
+						alert('Not found data on CSV file');
+					}
+				},
+			});
+		}
+	};
+
 	return (
 		<>
 			<div>
-				<div className='input-group flex-nowrap mb-2 w-25'>
-					<span
-						className='input-group-text'
-						id='addon-wrapping'
-					>
-						@
-					</span>
-					<input
-						type='text'
-						className='form-control'
-						placeholder='Search user by email...'
-						aria-label='search'
-						aria-describedby='addon-wrapping'
-						onChange={(e) => handelSearch(e)}
-					/>
+				<div className='d-flex align-items-center justify-content-between mb-2'>
+					<div className='input-group flex-nowrap w-25'>
+						<span
+							className='input-group-text'
+							id='addon-wrapping'
+						>
+							@
+						</span>
+						<input
+							type='text'
+							className='form-control'
+							placeholder='Search user by email...'
+							aria-label='search'
+							aria-describedby='addon-wrapping'
+							onChange={(e) => handelSearch(e)}
+						/>
+					</div>
+					<div className='d-flex align-items-center justify-content-between'>
+						<label
+							className='btn btn-danger me-2'
+							htmlFor='import-file'
+						>
+							<i className='fa-solid fa-file-arrow-up me-2'></i>
+							Import
+						</label>
+						<input
+							id='import-file'
+							type='file'
+							hidden
+							onChange={(e) => handelImportCSV(e)}
+						/>
+						<CSVLink
+							data={dataExport}
+							filename={'users.csv'}
+							className='btn btn-primary'
+							asyncOnClick={true}
+							onClick={getUsersExport}
+						>
+							<i className='fa-solid fa-file-arrow-down me-2'></i>
+							Export
+						</CSVLink>
+					</div>
 				</div>
 
 				<Table
@@ -274,6 +363,25 @@ const TableUsers = (props) => {
 				onHide={() => setIsShowModalConfirmDelete(false)}
 				dataUserDelete={dataUserDelete}
 			/>
+
+			<ToastContainer
+				position='top-end'
+				className='p-3'
+			>
+				<Toast
+					bg={'danger'}
+					delay={3000}
+					autohide
+					show={isShowToast}
+					onClose={() => setIsShowToast(false)}
+				>
+					<Toast.Header closeButton={true}>
+						<strong className='me-auto'>IMPORT FILE</strong>
+						<small className='text-muted'>just now</small>
+					</Toast.Header>
+					<Toast.Body>{'Only accept csv file...'}</Toast.Body>
+				</Toast>
+			</ToastContainer>
 		</>
 	);
 };

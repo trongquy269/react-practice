@@ -16,12 +16,13 @@ function App() {
 			<div className='app-container'>
 				<Header />
 				<Container>
-					<div className='my-3 add-new d-flex justify-content-between'>
+					<div className='my-3 add-new d-flex align-items-center justify-content-between'>
 						<h4>List user:</h4>
 						<button
 							className='btn btn-success'
 							onClick={() => setIsShowModalAddNew(true)}
 						>
+							<i className='fa-solid fa-circle-plus me-2'></i>
 							Add new user
 						</button>
 					</div>
