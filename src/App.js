@@ -1,11 +1,12 @@
 import { useState, createContext } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.scss';
-import Header from './components/Header';
-import TableUsers from './components/TableUsers';
 import { Container } from 'react-bootstrap';
 import ModalAddNew from './components/ModalAddNew';
+import Header from './components/Header';
+import TableUsers from './components/TableUsers';
 import Home from './components/Home';
-import { Routes, Route, Link } from 'react-router-dom';
+import Login from './components/Login';
 
 export const UserContext = createContext();
 
@@ -22,6 +23,10 @@ function App() {
 						<Route
 							path='/'
 							element={<Home />}
+						/>
+						<Route
+							path='/login'
+							element={<Login />}
 						/>
 						<Route
 							path='/users'
