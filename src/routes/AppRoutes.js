@@ -3,6 +3,7 @@ import Home from '../components/Home';
 import Login from '../components/Login';
 import TableUsers from '../components/TableUsers';
 import PrivateRoutes from './PrivateRoutes';
+import NotFoundPage from '../components/NotFoundPage';
 
 const AppRoutes = () => {
 	return (
@@ -22,6 +23,10 @@ const AppRoutes = () => {
 						<TableUsers />
 					</PrivateRoutes>
 				}
+			/>
+			<Route
+				path='*'
+				element={<NotFoundPage />}
 			/>
 		</Routes>
 	);

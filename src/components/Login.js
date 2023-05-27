@@ -43,6 +43,14 @@ const Login = () => {
 		setLoading(false);
 	};
 
+	const handleKeyDownSubmit = (e) => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			e.stopPropagation();
+			handleSubmit();
+		}
+	};
+
 	return (
 		<div>
 			<Form
@@ -72,6 +80,7 @@ const Login = () => {
 						type='email'
 						placeholder='Enter email'
 						onInput={(e) => setEmail(e.target.value)}
+						onKeyDown={(e) => handleKeyDownSubmit(e)}
 					/>
 				</Form.Group>
 				<p className='text-secondary'>
@@ -86,6 +95,7 @@ const Login = () => {
 						type='password'
 						placeholder='Password'
 						onInput={(e) => setPassword(e.target.value)}
+						onKeyDown={(e) => handleKeyDownSubmit(e)}
 					/>
 				</Form.Group>
 				<Form.Group

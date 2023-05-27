@@ -192,37 +192,11 @@ const TableUsers = (props) => {
 	return (
 		<>
 			<div>
-				<div className='my-3 add-new d-flex align-items-center justify-content-between'>
+				<div className='my-3 d-sm-flex align-items-center justify-content-between'>
 					<h4>List user:</h4>
-					<button
-						className='btn btn-success'
-						onClick={() => setIsShowModalAddNew(true)}
-					>
-						<i className='fa-solid fa-circle-plus me-2'></i>
-						Add new user
-					</button>
-				</div>
-
-				<div className='d-flex align-items-center justify-content-between mb-2'>
-					<div className='input-group flex-nowrap w-25'>
-						<span
-							className='input-group-text'
-							id='addon-wrapping'
-						>
-							@
-						</span>
-						<input
-							type='text'
-							className='form-control'
-							placeholder='Search user by email...'
-							aria-label='search'
-							aria-describedby='addon-wrapping'
-							onChange={(e) => handelSearch(e)}
-						/>
-					</div>
-					<div className='d-flex align-items-center justify-content-between'>
+					<div className='d-flex align-items-center justify-content-between gap-2'>
 						<label
-							className='btn btn-danger me-2'
+							className='btn btn-danger'
 							htmlFor='import-file'
 						>
 							<i className='fa-solid fa-file-arrow-up me-2'></i>
@@ -244,125 +218,147 @@ const TableUsers = (props) => {
 							<i className='fa-solid fa-file-arrow-down me-2'></i>
 							Export
 						</CSVLink>
+						<button
+							className='btn btn-success'
+							onClick={() => setIsShowModalAddNew(true)}
+						>
+							<i className='fa-solid fa-circle-plus me-2'></i>
+							Add new user
+						</button>
 					</div>
 				</div>
 
-				<Table
-					striped
-					bordered
-					hover
-				>
-					<thead>
-						<tr>
-							<th>
-								<div className='d-flex align-items-center justify-content-between'>
-									<span>ID</span>
-									<span>
-										<i
-											className='fa-solid fa-arrow-down-long ps-1 pe-1'
-											style={{ cursor: 'pointer' }}
-											onClick={() =>
-												setSortBy({
-													field: 'id',
-													order: 'desc',
-												})
-											}
-										></i>
-										<i
-											className='fa-solid fa-arrow-up-long ps-1 pe-1'
-											style={{ cursor: 'pointer' }}
-											onClick={() =>
-												setSortBy({
-													field: 'id',
-													order: 'asc',
-												})
-											}
-										></i>
-									</span>
-								</div>
-							</th>
-							<th>
-								<div className='d-flex align-items-center justify-content-between'>
-									<span>First Name</span>
-									<span>
-										<i
-											className='fa-solid fa-arrow-down-long ps-1 pe-1'
-											style={{ cursor: 'pointer' }}
-											onClick={() =>
-												setSortBy({
-													field: 'first_name',
-													order: 'desc',
-												})
-											}
-										></i>
-										<i
-											className='fa-solid fa-arrow-up-long ps-1 pe-1'
-											style={{ cursor: 'pointer' }}
-											onClick={() =>
-												setSortBy({
-													field: 'first_name',
-													order: 'asc',
-												})
-											}
-										></i>
-									</span>
-								</div>
-							</th>
-							<th>Last Name</th>
-							<th>Email</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						{listUsers &&
-							listUsers.length > 0 &&
-							listUsers.map((user, index) => (
-								<tr key={`users-${index}`}>
-									<td>{user.id}</td>
-									<td>{user.first_name}</td>
-									<td>{user.last_name}</td>
-									<td>{user.email}</td>
-									<td className='d-flex'>
-										<button
-											className='btn btn-warning w-50 me-1'
-											onClick={() => onEditUser(user)}
-										>
-											Edit
-										</button>
-										<button
-											className='btn btn-danger w-50 ms-1'
-											onClick={() =>
-												handleDeleteUser(user)
-											}
-										>
-											Delete
-										</button>
-									</td>
-								</tr>
-							))}
-					</tbody>
-				</Table>
+				<div className='mb-2 col-12 col-sm-6'>
+					<input
+						type='text'
+						className='form-control'
+						placeholder='Search user by email...'
+						aria-label='search'
+						aria-describedby='addon-wrapping'
+						onChange={(e) => handelSearch(e)}
+					/>
+				</div>
 
-				<ReactPaginate
-					nextLabel='next >'
-					onPageChange={handlePageClick}
-					pageRangeDisplayed={3}
-					marginPagesDisplayed={2}
-					pageCount={totalPages}
-					previousLabel='< previous'
-					pageClassName='page-item'
-					pageLinkClassName='page-link'
-					previousClassName='page-item'
-					previousLinkClassName='page-link'
-					nextClassName='page-item'
-					nextLinkClassName='page-link'
-					breakLabel='...'
-					breakClassName='page-item'
-					breakLinkClassName='page-link'
-					containerClassName='pagination'
-					activeClassName='active'
-					renderOnZeroPageCount={null}
-				/>
+				<div className='overflow-auto'>
+					<Table
+						striped
+						bordered
+						hover
+					>
+						<thead>
+							<tr>
+								<th>
+									<div className='d-flex align-items-center justify-content-between'>
+										<span>ID</span>
+										<span>
+											<i
+												className='fa-solid fa-arrow-down-long ps-1 pe-1'
+												style={{ cursor: 'pointer' }}
+												onClick={() =>
+													setSortBy({
+														field: 'id',
+														order: 'desc',
+													})
+												}
+											></i>
+											<i
+												className='fa-solid fa-arrow-up-long ps-1 pe-1'
+												style={{ cursor: 'pointer' }}
+												onClick={() =>
+													setSortBy({
+														field: 'id',
+														order: 'asc',
+													})
+												}
+											></i>
+										</span>
+									</div>
+								</th>
+								<th>
+									<div className='d-flex align-items-center justify-content-between'>
+										<span>First Name</span>
+										<span>
+											<i
+												className='fa-solid fa-arrow-down-long ps-1 pe-1'
+												style={{ cursor: 'pointer' }}
+												onClick={() =>
+													setSortBy({
+														field: 'first_name',
+														order: 'desc',
+													})
+												}
+											></i>
+											<i
+												className='fa-solid fa-arrow-up-long ps-1 pe-1'
+												style={{ cursor: 'pointer' }}
+												onClick={() =>
+													setSortBy({
+														field: 'first_name',
+														order: 'asc',
+													})
+												}
+											></i>
+										</span>
+									</div>
+								</th>
+								<th>Last Name</th>
+								<th>Email</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{listUsers &&
+								listUsers.length > 0 &&
+								listUsers.map((user, index) => (
+									<tr key={`users-${index}`}>
+										<td>{user.id}</td>
+										<td>{user.first_name}</td>
+										<td>{user.last_name}</td>
+										<td>{user.email}</td>
+										<td className='d-flex'>
+											<button
+												className='btn btn-warning w-50 me-1'
+												onClick={() => onEditUser(user)}
+											>
+												Edit
+											</button>
+											<button
+												className='btn btn-danger w-50 ms-1'
+												onClick={() =>
+													handleDeleteUser(user)
+												}
+											>
+												Delete
+											</button>
+										</td>
+									</tr>
+								))}
+						</tbody>
+					</Table>
+				</div>
+
+				<div className='d-flex justify-content-center mt-3'>
+					<ReactPaginate
+						nextLabel='next >'
+						onPageChange={handlePageClick}
+						pageRangeDisplayed={3}
+						marginPagesDisplayed={2}
+						pageCount={totalPages}
+						previousLabel='< previous'
+						pageClassName='page-item'
+						pageLinkClassName='page-link'
+						previousClassName='page-item'
+						previousLinkClassName='page-link'
+						nextClassName='page-item'
+						nextLinkClassName='page-link'
+						breakLabel='...'
+						breakClassName='page-item'
+						breakLinkClassName='page-link'
+						containerClassName='pagination'
+						activeClassName='active'
+						renderOnZeroPageCount={null}
+					/>
+				</div>
 			</div>
 
 			<ModalAddNew
