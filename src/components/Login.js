@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Form, Button, ToastContainer, Toast } from 'react-bootstrap';
 import { login } from '../services/UserService';
+import { UserProvider } from '../context/UserContext';
 
 const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [stateShowToast, setStateShowToast] = useState('');
 	const [loading, setLoading] = useState(false);
+
+	const { loginContext } = useContext(UserProvider);
 
 	const navigate = useNavigate();
 
@@ -31,8 +34,8 @@ const Login = () => {
 		if (res && res.token) {
 			setEmail('');
 			setPassword('');
-			localStorage.setItem('token', res.token);
-			navigate('/');
+			loginContext(email, res.token);
+			window.location.href = '/';
 		} else if (res && res.status === 400) {
 			setStateShowToast(res.data.error);
 		}
@@ -103,12 +106,13 @@ const Login = () => {
 					{loading && <i className='fas fa-spinner fa-spin'></i>}
 					&nbsp;Submit
 				</Button>
-				<div
+				<Link
 					className='text-dark ms-auto me-auto mt-3 p-2'
-					style={{ cursor: 'pointer' }}
+					style={{ textDecoration: 'none' }}
+					to='/'
 				>
 					<i className='fa-solid fa-arrow-left-long'></i> Go back
-				</div>
+				</Link>
 			</Form>
 
 			{/* Toast */}

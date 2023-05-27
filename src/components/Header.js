@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import logoApp from '../assets/images/logo192.png';
 import { useLocation, NavLink } from 'react-router-dom';
+import { UserProvider } from '../context/UserContext';
 
 const Header = (props) => {
 	const [token, setToken] = useState(localStorage.getItem('token'));
 	const location = useLocation();
+	const { user, logoutContext } = useContext(UserProvider);
 
 	const handleLogout = () => {
 		if (token) {
-			localStorage.removeItem('token');
+			logoutContext();
 			setToken('');
 		}
 	};
@@ -45,30 +47,35 @@ const Header = (props) => {
 						>
 							Home
 						</NavLink>
-						<NavLink
-							className='nav-link'
-							to='/users'
-						>
-							Manage Users
-						</NavLink>
+						{user && user.auth && (
+							<NavLink
+								className='nav-link'
+								to='/users'
+							>
+								Manage Users
+							</NavLink>
+						)}
 					</Nav>
 					<Nav>
+						{user && user.auth && (
+							<span className='nav-link'>Hi, {user.email}</span>
+						)}
 						<NavDropdown
 							title='Settings'
 							id='basic-nav-dropdown'
 						>
-							<NavDropdown.Item
-								href='/login'
-								disabled={token}
-							>
-								Login
-							</NavDropdown.Item>
-							<NavDropdown.Item
-								onClick={() => handleLogout()}
-								disabled={!token}
-							>
-								Logout
-							</NavDropdown.Item>
+							{user && !user.auth && (
+								<NavDropdown.Item href='/login'>
+									Login
+								</NavDropdown.Item>
+							)}
+							{user && user.auth && (
+								<NavDropdown.Item
+									onClick={() => handleLogout()}
+								>
+									Logout
+								</NavDropdown.Item>
+							)}
 						</NavDropdown>
 					</Nav>
 				</Navbar.Collapse>
