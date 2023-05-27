@@ -9,6 +9,7 @@ import { fetchAllUser } from '../services/UserService';
 import { UserContext } from '../App';
 import ModalEditUser from './ModalEditUser';
 import ModalConfirm from './ModalConfirm';
+import ModalAddNew from './ModalAddNew';
 
 const TableUsers = (props) => {
 	const [listUsers, setListUsers] = useState([]);
@@ -22,6 +23,7 @@ const TableUsers = (props) => {
 	const [sortBy, setSortBy] = useState({ field: 'id', order: 'asc' });
 	const [dataExport, setDataExport] = useState([]);
 	const [isShowToast, setIsShowToast] = useState(false);
+	const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
 
 	const { user } = useContext(UserContext);
 
@@ -190,6 +192,17 @@ const TableUsers = (props) => {
 	return (
 		<>
 			<div>
+				<div className='my-3 add-new d-flex align-items-center justify-content-between'>
+					<h4>List user:</h4>
+					<button
+						className='btn btn-success'
+						onClick={() => setIsShowModalAddNew(true)}
+					>
+						<i className='fa-solid fa-circle-plus me-2'></i>
+						Add new user
+					</button>
+				</div>
+
 				<div className='d-flex align-items-center justify-content-between mb-2'>
 					<div className='input-group flex-nowrap w-25'>
 						<span
@@ -351,6 +364,11 @@ const TableUsers = (props) => {
 					renderOnZeroPageCount={null}
 				/>
 			</div>
+
+			<ModalAddNew
+				show={isShowModalAddNew}
+				onHide={() => setIsShowModalAddNew(false)}
+			/>
 
 			<ModalEditUser
 				show={isShowModalEditUser}
